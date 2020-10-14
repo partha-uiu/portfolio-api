@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\PortfolioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/hello', function (Request $request) {
-    return "response from api";
-});
+
+Route::get('/portfolios', [PortfolioController::class, 'index']);
+Route::post('/portfolios', [PortfolioController::class, 'store']);
+Route::get('portfolios/{id}', [PortfolioController::class, 'show']);
+Route::put('portfolios/{id}', [PortfolioController::class, 'update']);
+Route::delete('portfolios/{id}', [PortfolioController::class, 'destroy']);
