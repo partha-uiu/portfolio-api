@@ -32,16 +32,18 @@ class PortfolioController extends Controller
         $portfolio->title = $request->title;
         $portfolio->category = $request->category;
         $portfolio->description = $request->description;
-        $imagePath = $request->images->storeAs('images',  "image-".time().$file->getClientOriginalName());
-      
-        $imageForThumnbnail = Image::make($file);   
-        $imageForThumnbnail->resize(250,125);
-        $fileName = md5($imagePath . microtime());
-        $extension = '.' . explode("/", $imageForThumnbnail->mime())[1];
-        $thumbnailPath = Storage::put('public/thumbnails/' . $fileName . $extension,  $imageForThumnbnail->encode());
-
-        $portfolio->thumbnail = $thumbnailPath;
-        $portfolio->images = $imagePath;
+        //  general image upload
+        $imageSaveAsName = "image-".time().$file->getClientOriginalName();
+        $imagePath = $request->images->storeAs('images', $imageSaveAsName);
+        // thumbnail image upload , using Intervention  
+        $imageThumnbnail = Image::make($file);   
+        $imageThumnbnail->resize(250,125);
+        $imageThumnbnailSaveAsName = "thumbnail-".time().$file->getClientOriginalName();
+        $extension = '.' . explode("/", $imageThumnbnail->mime())[1];
+        $thumbnailPath = Storage::put('thumbnails/' . $imageThumnbnailSaveAsName , (string)  $imageThumnbnail->encode());
+        // end upload
+        $portfolio->images = "portfolios/". $imageSaveAsName;
+        $portfolio->thumbnail = "thumbnails/".$imageThumnbnailSaveAsName;
         $portfolio->save();
 
         return response()->json([
@@ -65,7 +67,8 @@ class PortfolioController extends Controller
 
   
     public function update(UpdatePortfolioRequest $request, $id)
-    {
+    {        
+        $file =  $request->file('images');
         $portfolio = Portfolio::find($id);
 
         if(!$portfolio) {
@@ -77,15 +80,18 @@ class PortfolioController extends Controller
         $portfolio->title = $request->title;
         $portfolio->category = $request->category;
         $portfolio->description = $request->description;
-        // image and thumbnail upload
-        $file =  $request->file('images');
-        $imageForThumnbnail = Image::make( $file);   
-        $imageForThumnbnail->resize(250,125);
-
-        $thumbnailPath = $imageForThumnbnail->storeAs('thumbnails',  "tumbnail-".time().$request->images->getClientOriginalName());
-        $imagePath = $request->images->storeAs('images',  "image-".time().$request->image->getClientOriginalName());
-        $portfolio->thumbnail = $thumbnailPath;
-        $portfolio->images = $imagePath;
+        //  general image upload
+        $imageSaveAsName = "image-".time().$file->getClientOriginalName();
+        $imagePath = $request->images->storeAs('images', $imageSaveAsName);
+        // thumbnail image upload , using Intervention  
+        $imageThumnbnail = Image::make($file);   
+        $imageThumnbnail->resize(250,125);
+        $imageThumnbnailSaveAsName = "thumbnail-".time().$file->getClientOriginalName();
+        $extension = '.' . explode("/", $imageThumnbnail->mime())[1];
+        $thumbnailPath = Storage::put('thumbnails/' . $imageThumnbnailSaveAsName , (string)  $imageThumnbnail->encode());
+        // end upload
+        $portfolio->images = "portfolios/". $imageSaveAsName;
+        $portfolio->thumbnail = "thumbnails/".$imageThumnbnailSaveAsName;
         $portfolio->save();
 
         return response()->json([
@@ -93,9 +99,9 @@ class PortfolioController extends Controller
         ]);
     }
 
-    public function destroy(Portfolio $portfolio)
+    public function destroy($id)
     {
-        Portfolio::find($id)->delete();
+        $portfolio = Portfolio::find($id)->delete();
         
         if(!$portfolio) {
             return response()->json([
