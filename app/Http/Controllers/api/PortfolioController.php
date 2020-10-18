@@ -14,12 +14,16 @@ use Illuminate\Support\Facades\Storage;
 class PortfolioController extends Controller
 {
     
-    public function index()
+    public function index(Request $request)
     { 
         $portfolios = Portfolio::all();
-        
-        $data = ['portfolios' => $portfolios];
 
+        if($request->filled('q')){
+            $q = $request->q;
+            $portfolios = Portfolio::where('category', 'like', '%' .$q. '%')->get();
+        } 
+        $data = ['portfolios' => $portfolios];
+        
         return response()->json($data, 200);
     }
 
@@ -34,15 +38,15 @@ class PortfolioController extends Controller
         $portfolio->description = $request->description;
         //  general image upload
         $imageSaveAsName = "image-".time().$file->getClientOriginalName();
-        $imagePath = $request->images->storeAs('images', $imageSaveAsName);
+        $imagePath = $request->images->storeAs('public/images', $imageSaveAsName);
         // thumbnail image upload , using Intervention  
         $imageThumnbnail = Image::make($file);   
         $imageThumnbnail->resize(250,125);
         $imageThumnbnailSaveAsName = "thumbnail-".time().$file->getClientOriginalName();
         $extension = '.' . explode("/", $imageThumnbnail->mime())[1];
-        $thumbnailPath = Storage::put('thumbnails/' . $imageThumnbnailSaveAsName , (string)  $imageThumnbnail->encode());
+        $thumbnailPath = Storage::put('public/thumbnails/' . $imageThumnbnailSaveAsName , (string)  $imageThumnbnail->encode());
         // end upload
-        $portfolio->images = "portfolios/". $imageSaveAsName;
+        $portfolio->images = "images/". $imageSaveAsName;
         $portfolio->thumbnail = "thumbnails/".$imageThumnbnailSaveAsName;
         $portfolio->save();
 
