@@ -23,11 +23,15 @@ class UpdatePortfolioRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->route('id');
+        
+
         return [
-            'title' => 'required|unique:portfolios',
+            'title' => 'required|unique:portfolios,id,'.$id,
             'category' => 'required',
             'description' => 'required',
-            'images' => 'required | mimes:jpeg,png,jpg,gif,svg | max:1000',
+            'images' => 'required',
+            'images.*' => 'image | mimes:jpeg,png,jpg,gif,svg | max:1000',
         ];
     }
 }

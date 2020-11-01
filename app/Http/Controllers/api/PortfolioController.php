@@ -30,25 +30,30 @@ class PortfolioController extends Controller
     
     public function store(StorePortfolioRequest $request)
     {
-        $file =  $request->file('images');
-
+        $images  =  $request->file('images');
         $portfolio = new Portfolio;
         $portfolio->title = $request->title;
         $portfolio->category = $request->category;
         $portfolio->description = $request->description;
-        //  general image upload
-        $imageSaveAsName = "image-".time().$file->getClientOriginalName();
-        $imagePath = $request->images->storeAs('public/images', $imageSaveAsName);
+        
+        //  multiple image upload
+        $imageUrls = [];
+        
+        foreach ($images as $image) {
+            $imageSaveAsName = "image-".time().rand(0, 100).$image->getClientOriginalName();
+            $imagePath = $image->storeAs('public/images', $imageSaveAsName);
+            $imageUrls[] = "images/".$imageSaveAsName;
+        }
+     
         // thumbnail image upload , using Intervention  
-        $imageThumnbnail = Image::make($file);   
+        $imageThumnbnail = Image::make($images[0]);   
         $imageThumnbnail->resize(250,125);
-        $imageThumnbnailSaveAsName = "thumbnail-".time().$file->getClientOriginalName();
-        $extension = '.' . explode("/", $imageThumnbnail->mime())[1];
+        $imageThumnbnailSaveAsName = "thumbnail-".time().$images[0]->getClientOriginalName();
         $thumbnailPath = Storage::put('public/thumbnails/' . $imageThumnbnailSaveAsName , (string)  $imageThumnbnail->encode());
         // end upload
-        $portfolio->images = "images/". $imageSaveAsName;
+        $portfolio->images = implode(",",$imageUrls);
         $portfolio->thumbnail = "thumbnails/".$imageThumnbnailSaveAsName;
-        $portfolio->save();
+        $portfolio->save(); 
 
         return response()->json([
             'message' => 'Portfolio has been created successfully !'
@@ -72,7 +77,8 @@ class PortfolioController extends Controller
   
     public function update(UpdatePortfolioRequest $request, $id)
     {        
-        $file =  $request->file('images');
+        $images  =  $request->file('images');
+
         $portfolio = Portfolio::find($id);
 
         if(!$portfolio) {
@@ -84,19 +90,26 @@ class PortfolioController extends Controller
         $portfolio->title = $request->title;
         $portfolio->category = $request->category;
         $portfolio->description = $request->description;
-        //  general image upload
-        $imageSaveAsName = "image-".time().$file->getClientOriginalName();
-        $imagePath = $request->images->storeAs('images', $imageSaveAsName);
+
+        //multiple image update
+        $imageUrls = [];
+        
+        foreach ($images as $image) {
+            $imageSaveAsName = "image-".time().rand(0, 100).$image->getClientOriginalName();
+            $imagePath = $image->storeAs('public/images', $imageSaveAsName);
+            $imageUrls[] = "images/".$imageSaveAsName;
+        }
+     
         // thumbnail image upload , using Intervention  
-        $imageThumnbnail = Image::make($file);   
+        $imageThumnbnail = Image::make($images[0]);   
         $imageThumnbnail->resize(250,125);
-        $imageThumnbnailSaveAsName = "thumbnail-".time().$file->getClientOriginalName();
-        $extension = '.' . explode("/", $imageThumnbnail->mime())[1];
-        $thumbnailPath = Storage::put('thumbnails/' . $imageThumnbnailSaveAsName , (string)  $imageThumnbnail->encode());
+        $imageThumnbnailSaveAsName = "thumbnail-".time().$images[0]->getClientOriginalName();
+        $thumbnailPath = Storage::put('public/thumbnails/' . $imageThumnbnailSaveAsName , (string)  $imageThumnbnail->encode());
         // end upload
-        $portfolio->images = "portfolios/". $imageSaveAsName;
+        $portfolio->images = implode(",",$imageUrls);
         $portfolio->thumbnail = "thumbnails/".$imageThumnbnailSaveAsName;
-        $portfolio->save();
+        $portfolio->save(); 
+
 
         return response()->json([
             'message' => 'Portfolio has been updated successfully !'

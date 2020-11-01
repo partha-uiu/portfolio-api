@@ -27,7 +27,8 @@ class StorePortfolioRequest extends FormRequest
             'title' => 'required|unique:portfolios',
             'category' => 'required',
             'description' => 'required',
-            'images' => 'required | mimes:jpeg,png,jpg,gif,svg | max:1000',
+            'images' => 'required',
+            'images.*' => 'image | mimes:jpeg,png,jpg,gif,svg | max:1000',
         ];
     }
 }
