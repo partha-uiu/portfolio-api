@@ -1,4 +1,8 @@
 
+@extends('layouts.app')
+
+@section('content')
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 
@@ -6,10 +10,8 @@
     <div class="row justify-content-center">
         <div class="col-md-6 mt-5 ">
             <nav class="navbar navbar-light bg-light text-center">
-                <span class="navbar-text font-weight-bold">
-                    Portfolio Api        
-                </span>
-                <span class="navbar-text text-right">
+               
+                <span class="navbar-text text-left">
                    <a href="{{route('portfolios')}}"> Portfolio List </a>    
                 </span>
             </nav>
@@ -67,3 +69,6 @@
 });
 
 </script>
+
+
+@endsection

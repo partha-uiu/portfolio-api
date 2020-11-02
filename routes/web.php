@@ -15,13 +15,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('foo', function () {
+    return view('welcome');
+});
 
-Route::get('/', [PortfolioController::class, 'index'])->name('portfolios');
 
-Route::get('/portfolio/create', [PortfolioController::class, 'create'])->name('portfolio.create');
+Route::get('/portfolios', [PortfolioController::class, 'index'])->name('portfolios');
 
-Route::post('/portfolio/create', [PortfolioController::class, 'store'])->name('portfolio.store');
+Auth::routes();
+
+
+
+
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/portfolio/create', [PortfolioController::class, 'create'])->name('portfolio.create');
+
+    Route::post('/portfolio/create', [PortfolioController::class, 'store'])->name('portfolio.store');
  
-Route::get('/portfolio/{id}', [PortfolioController::class, 'show'])->name('portfolio.show');
+    Route::get('/portfolio/{id}', [PortfolioController::class, 'show'])->name('portfolio.show');
 
-Route::get('/portfolio/{id}/delete', [PortfolioController::class, 'destroy'])->name('portfolio.destory');
+    Route::get('/portfolio/{id}/delete', [PortfolioController::class, 'destroy'])->name('portfolio.destory');
+});
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

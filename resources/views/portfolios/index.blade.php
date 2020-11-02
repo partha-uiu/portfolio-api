@@ -8,11 +8,9 @@
     <div class="row justify-content-center">
         <div class="col-md-6 mt-5 ">
             <nav class="navbar navbar-light bg-light text-center">
-                <span class="navbar-text font-weight-bold">
-                    Portfolio Api        
-                </span>
-                <span class="navbar-text text-right">
-                   <a href="{{route('portfolio.create')}}"> Add New </a>    
+               
+                <span class="navbar-text text-left">
+                   <a href="{{route('portfolios')}}"> Portfolio List </a>    
                 </span>
             </nav>
         </div>
