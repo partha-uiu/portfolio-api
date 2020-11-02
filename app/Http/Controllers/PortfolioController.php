@@ -77,7 +77,8 @@ class PortfolioController extends Controller
             ]);
         }
 
-        return response()->json($portfolio, 200);
+        return view('portfolios.show');
+
     }
 
   
@@ -117,9 +118,8 @@ class PortfolioController extends Controller
         $portfolio->save(); 
 
 
-        return response()->json([
-            'message' => 'Portfolio has been updated successfully !'
-        ]);
+        return redirect()->back()->with('success', 'Portfolio has been updated successfully !');
+
     }
 
     public function destroy($id)
@@ -131,8 +131,8 @@ class PortfolioController extends Controller
                 'message' => 'Portfolio not found !'
             ]);
         }
-        return response()->json([
-            'message' => 'Portfolio has been deleted successfully !'
-        ]);
+
+       return redirect()->back()->with('success', 'Portfolio has been deleted successfully !');
+
     }
 }

@@ -22,4 +22,6 @@ Route::get('/portfolio/create', [PortfolioController::class, 'create'])->name('p
 
 Route::post('/portfolio/create', [PortfolioController::class, 'store'])->name('portfolio.store');
  
+Route::get('/portfolio/{id}', [PortfolioController::class, 'show'])->name('portfolio.show');
 
+Route::get('/portfolio/{id}/delete', [PortfolioController::class, 'destroy'])->name('portfolio.destory');
