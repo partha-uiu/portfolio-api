@@ -17,11 +17,13 @@ class PortfolioController extends Controller
     public function index(Request $request)
     { 
         $portfolios = Portfolio::all();
+        // dd($request->query('q'));
 
-        if($request->filled('q')){
-            $q = $request->q;
-            $portfolios = Portfolio::where('category', 'like', '%' .$q. '%')->get();
+        if($request->query('q')){
+            $id = $request->query('q');
+            $portfolios = Portfolio::find($id);
         } 
+
         $data = ['portfolios' => $portfolios];
         
         return response()->json($data, 200);
