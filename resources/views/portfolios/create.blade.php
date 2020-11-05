@@ -5,15 +5,34 @@
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+<style>
+    .pl-100 {
+        padding-left: 100px;
+    }
+
+    .navbar span {
+        color:white !important; 
+    }
+
+    .navbar {
+        background-color: #bf2424 !important;
+    }
+
+    .navbar-light .navbar-text a {
+        color: rgb(230 203 203) !important;
+        font-weight: bold !important;
+    }
+</style>
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6 mt-5 ">
-            <nav class="navbar navbar-light bg-light text-center">
+        <div class="col-md-6 mt-5 align-self-end">
+            <nav class="navbar navbar-light bg-light text-right">
                
-                <span class="navbar-text text-left">
+                <span class="navbar-text float-right">
                    <a href="{{route('portfolios')}}"> Portfolio List </a>    
                 </span>
+
             </nav>
         </div>
     </div>
